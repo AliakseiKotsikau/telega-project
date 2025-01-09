@@ -523,8 +523,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardSize: 10
-  letterCellPrefab: {fileID: 666657409672837470, guid: e2f7c71f5321c4a59bd0c1fef922cc01, type: 3}
-  cellSpacing: 50
+  letterCellPrefab: {fileID: 7951395155550756079, guid: 5148715f72b9b2d4195b506970a5ccd3, type: 3}
+  cellSpacing: 200
   canvas: {fileID: 206189799}
   letters: ABCDEFGHIJKLMNOPQRSTUVWXYZ
   wordsToPlace:

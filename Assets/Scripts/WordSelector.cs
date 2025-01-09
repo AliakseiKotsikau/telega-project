@@ -45,7 +45,7 @@ public class WordSelector : MonoBehaviour
             {
                 HighlightCell(c, Color.green);
                 // Делаем неактивной кнопку, чтобы больше нельзя было нажать/выбрать эту клетку
-                var button = c.GetComponentInChildren<Button>();
+                var button = c.GetComponent<Button>();
                 if (button != null) button.interactable = false;
             }
 
@@ -72,7 +72,7 @@ public class WordSelector : MonoBehaviour
     // Помощник, чтобы не писать BoardManager.Instance в каждой строке
     private BoardManager BoardManagerInstance()
     {
-        return FindObjectOfType<BoardManager>();
+        return FindAnyObjectByType<BoardManager>();
         // или, если у вас Singleton-доступ к BoardManager, то: return BoardManager.Instance;
     }
 
@@ -95,7 +95,7 @@ public class WordSelector : MonoBehaviour
     // Меняем цвет фона ячейки (если есть Image)
     private void HighlightCell(LetterCell cell, Color color)
     {
-        Image img = cell.GetComponentInChildren<Image>();
+        Image img = cell.GetComponent<Image>();
         if (img != null)
         {
             img.color = color;

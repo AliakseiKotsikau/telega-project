@@ -41,7 +41,6 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
     /// </summary>
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log($"OnPointerDown на букве: {letter}");
         // Начинаем выбор
         WordSelector.Instance.StartSelection(this);
 
@@ -59,7 +58,6 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
         // можно проверить:
         if (eventData.pointerDrag != null || Input.GetMouseButton(0))
         {
-            Debug.Log($"OnPointerEnter на букве: {letter}");
             WordSelector.Instance.ContinueSelection(this);
         }
     }
@@ -70,7 +68,6 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
     /// </summary>
     public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log($"OnPointerUp на букве: {letter}");
         WordSelector.Instance.EndSelection();
     }
 }
