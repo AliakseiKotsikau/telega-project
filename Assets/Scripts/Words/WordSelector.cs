@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class WordSelector : MonoBehaviour
 {
+    private WordDisplay wordDisplay;
+
     public static WordSelector Instance;
 
     // Список текущих выбранных ячеек
@@ -13,6 +15,7 @@ public class WordSelector : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        wordDisplay = GetComponent<WordDisplay>();
     }
 
     public void StartSelection(LetterCell cell)
@@ -48,6 +51,8 @@ public class WordSelector : MonoBehaviour
                 var button = c.GetComponent<Button>();
                 if (button != null) button.interactable = false;
             }
+
+            wordDisplay.MarkWordFound(selectedWord);
 
             // (необязательно) Удаляем это слово из validWords, чтобы повторно его нельзя было «найти»
             BoardManagerInstance().validWords.Remove(selectedWord);

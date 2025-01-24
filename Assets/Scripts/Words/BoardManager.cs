@@ -15,7 +15,10 @@ public class BoardManager : MonoBehaviour
     public string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // Буквы для случайной заливки
     public List<string> wordsToPlace;                         // Список слов, которые нужно гарантированно разместить
                                                               // Храним все слова, которые действительно размещены на поле (в верхнем регистре)
-    public HashSet<string> validWords = new HashSet<string>();
+    public List<string> validWords = new List<string>();
+
+    private WordDisplay wordDisplay;
+    private RandomWordSelector randomWordSelector;
 
     // Вспомогательная матрица символов (букв)
     private char[,] letterGrid;
@@ -23,9 +26,17 @@ public class BoardManager : MonoBehaviour
     // Массив всех ячеек (скриптов), чтобы можно было обращаться извне
     private LetterCell[,] grid;
 
+    private void Awake()
+    {
+        wordDisplay = GetComponent<WordDisplay>();
+        randomWordSelector = GetComponent<RandomWordSelector>();
+    }
+
     void Start()
     {
+        wordsToPlace = randomWordSelector.GetRandomWordSet();
         GenerateBoard();
+        wordDisplay.SetWordsToFind(validWords);
     }
 
     /// <summary>
@@ -63,9 +74,9 @@ public class BoardManager : MonoBehaviour
         Vector2Int[] directions = new Vector2Int[]
         {
             new Vector2Int(1, 0),   // слева -> направо
-            new Vector2Int(-1, 0),  // справа -> налево
+           // new Vector2Int(-1, 0),  // справа -> налево
             new Vector2Int(0, 1),   // сверху -> вниз
-            new Vector2Int(0, -1)   // снизу -> вверх
+            //new Vector2Int(0, -1)   // снизу -> вверх
         };
 
         foreach (string word in words)

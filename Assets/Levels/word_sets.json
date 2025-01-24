@@ -1,0 +1,32 @@
+{
+    "animals": [
+        "lion",
+        "tiger",
+        "elephant",
+        "giraffe",
+        "zebra",
+        "monkey",
+        "bear",
+        "kangaroo"
+    ],
+    "ocean": [
+        "shark",
+        "whale",
+        "dolphin",
+        "octopus",
+        "starfish",
+        "coral",
+        "seahorse",
+        "jellyfish"
+    ],
+    "cars": [
+        "sedan",
+        "coupe",
+        "convertible",
+        "SUV",
+        "truck",
+        "minivan",
+        "hatchback",
+        "roadster"
+    ]
+}
