@@ -1,28 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using TMPro; // Если вы используете TextMeshPro
+using TMPro;
 
 public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerUpHandler
 {
-    [Header("Данные ячейки")]
-    public char letter;       // Какая буква хранится
-    public int x;             // Координата в матрице
-    public int y;             // Координата в матрице
+    [SerializeField]
+    private TextMeshProUGUI cellText;
 
-    private TextMeshProUGUI cellText;    // Если используете обычный Text
+    [Header("Cell Data")]
+    [SerializeField]
+    private char letter;
+    [SerializeField]
+    private int x;
+    [SerializeField]
+    private int y;
 
+    public char Letter => letter;
 
-    private void Awake()
-    {
-        // Предположим, что в префабе есть компонент Text
-        cellText = GetComponentInChildren<TextMeshProUGUI>();
-
-    }
-
-    /// <summary>
-    /// Инициализация ячейки
-    /// </summary>
     public void Setup(char letter, int x, int y)
     {
         this.letter = letter;
@@ -31,9 +26,6 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
 
         if (cellText != null)
             cellText.text = letter.ToString();
-
-        // if (cellTextTMP != null)
-        //    cellTextTMP.text = letter.ToString();
     }
 
     /// <summary>
@@ -69,5 +61,14 @@ public class LetterCell : MonoBehaviour, IPointerDownHandler, IPointerEnterHandl
     public void OnPointerUp(PointerEventData eventData)
     {
         WordSelector.Instance.EndSelection();
+    }
+
+    public void Highlight(Color color)
+    {
+        Image img = GetComponent<Image>();
+        if (img != null)
+        {
+            img.color = color;
+        }
     }
 }

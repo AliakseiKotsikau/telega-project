@@ -1,16 +1,14 @@
 using UnityEngine;
 
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
 
-public class WordDisplay : MonoBehaviour
+public class WordsToFindManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI wordListText; // UI элемент для отображения текста
 
     private List<string> wordsToFind = new List<string>();
     private List<string> foundWords = new List<string>();
-
 
     public void SetWordsToFind(List<string> words)
     {
@@ -26,7 +24,6 @@ public class WordDisplay : MonoBehaviour
             UpdateWordList(); // Обновляем список с учетом нового найденного слова
         }
     }
-
 
     private void UpdateWordList()
     {

@@ -5,17 +5,24 @@ using UnityEngine.UI;
 
 public class WordSelector : MonoBehaviour
 {
-    private WordDisplay wordDisplay;
-
     public static WordSelector Instance;
 
-    // Список текущих выбранных ячеек
+    private WordsToFindManager wordsToFindManager;
+
+    private List<string> validWords = new List<string>();
+
     private List<LetterCell> selectedCells = new List<LetterCell>();
 
     private void Awake()
     {
         Instance = this;
-        wordDisplay = GetComponent<WordDisplay>();
+        wordsToFindManager = GetComponent<WordsToFindManager>();
+    }
+
+    public void SetValidWords(List<string> wordsOnBoard)
+    {
+        validWords = wordsOnBoard;
+        wordsToFindManager.SetWordsToFind(wordsOnBoard);
     }
 
     public void StartSelection(LetterCell cell)
@@ -39,23 +46,22 @@ public class WordSelector : MonoBehaviour
         string selectedWord = GetSelectedWord().ToUpper();
 
         // Проверить, есть ли оно в списке validWords
-        bool isCorrect = BoardManagerInstance().validWords.Contains(selectedWord);
-        Debug.Log(isCorrect);
+        bool isCorrect = validWords.Contains(selectedWord);
+
         if (isCorrect)
         {
             // Подсвечиваем зелёным
             foreach (var c in selectedCells)
             {
-                HighlightCell(c, Color.green);
-                // Делаем неактивной кнопку, чтобы больше нельзя было нажать/выбрать эту клетку
+                c.Highlight(Color.green);
                 var button = c.GetComponent<Button>();
                 if (button != null) button.interactable = false;
             }
 
-            wordDisplay.MarkWordFound(selectedWord);
+            wordsToFindManager.MarkWordFound(selectedWord);
 
             // (необязательно) Удаляем это слово из validWords, чтобы повторно его нельзя было «найти»
-            BoardManagerInstance().validWords.Remove(selectedWord);
+            validWords.Remove(selectedWord);
 
             Debug.Log($"Правильное слово: {selectedWord}");
         }
@@ -64,7 +70,7 @@ public class WordSelector : MonoBehaviour
             // Сбрасываем цвет на белый
             foreach (var c in selectedCells)
             {
-                HighlightCell(c, Color.white);
+                c.Highlight(Color.white);
             }
 
             Debug.Log($"Неправильное слово: {selectedWord}");
@@ -74,17 +80,10 @@ public class WordSelector : MonoBehaviour
         selectedCells.Clear();
     }
 
-    // Помощник, чтобы не писать BoardManager.Instance в каждой строке
-    private BoardManager BoardManagerInstance()
-    {
-        return FindAnyObjectByType<BoardManager>();
-        // или, если у вас Singleton-доступ к BoardManager, то: return BoardManager.Instance;
-    }
-
     private void AddCell(LetterCell cell)
     {
         selectedCells.Add(cell);
-        HighlightCell(cell, Color.yellow);
+        cell.Highlight(Color.yellow);
     }
 
     private string GetSelectedWord()
@@ -92,18 +91,8 @@ public class WordSelector : MonoBehaviour
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         foreach (var c in selectedCells)
         {
-            sb.Append(c.letter);
+            sb.Append(c.Letter);
         }
         return sb.ToString();
-    }
-
-    // Меняем цвет фона ячейки (если есть Image)
-    private void HighlightCell(LetterCell cell, Color color)
-    {
-        Image img = cell.GetComponent<Image>();
-        if (img != null)
-        {
-            img.color = color;
-        }
     }
 }

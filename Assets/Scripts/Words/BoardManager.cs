@@ -1,24 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
 public class BoardManager : MonoBehaviour
 {
     [Header("Параметры поля")]
-    public int boardSize = 8;                        // Размер NxN
+    [SerializeField]
+    public int boardSize = 10;                        // Размер NxN
+    [SerializeField]
     public GameObject letterCellPrefab;              // Префаб ячейки (с LetterCell)
-    public float cellSpacing = 50f;                  // Расстояние между ячейками (UI вариант)
+    [SerializeField]
     public GameObject canvas;                        // Canvas, на котором размещаются ячейки
 
     [Header("Содержание поля")]
-    public string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // Буквы для случайной заливки
-    public List<string> wordsToPlace;                         // Список слов, которые нужно гарантированно разместить
-                                                              // Храним все слова, которые действительно размещены на поле (в верхнем регистре)
-    public List<string> validWords = new List<string>();
+    [SerializeField]
+    private string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // Буквы для случайной заливки
 
-    private WordDisplay wordDisplay;
+    private List<string> wordsToPlace;                         
+
     private RandomWordSelector randomWordSelector;
+    private WordSelector wordSelector;
 
     // Вспомогательная матрица символов (букв)
     private char[,] letterGrid;
@@ -28,16 +28,21 @@ public class BoardManager : MonoBehaviour
 
     private void Awake()
     {
-        wordDisplay = GetComponent<WordDisplay>();
         randomWordSelector = GetComponent<RandomWordSelector>();
+        wordSelector = GetComponent<WordSelector>();
     }
 
     void Start()
     {
+        randomWordSelector.OnWordsLoadFinished += GenerateBoardWithWords;
+    }
+
+    private void GenerateBoardWithWords()
+    {
         wordsToPlace = randomWordSelector.GetRandomWordSet();
         GenerateBoard();
-        wordDisplay.SetWordsToFind(validWords);
     }
+
 
     /// <summary>
     /// Генерация поля NxN с размещением заданных слов и заполнением пустот.
@@ -79,6 +84,8 @@ public class BoardManager : MonoBehaviour
             //new Vector2Int(0, -1)   // снизу -> вверх
         };
 
+        List<string> validWords = new List<string>();
+
         foreach (string word in words)
         {
             // Попробуем несколько раз подобрать позицию и направление
@@ -114,6 +121,8 @@ public class BoardManager : MonoBehaviour
                 Debug.LogWarning($"Не удалось разместить слово '{word}' на поле.");
             }
         }
+
+        wordSelector.SetValidWords(validWords);
     }
 
     /// <summary>
@@ -190,10 +199,6 @@ public class BoardManager : MonoBehaviour
                 // Создаём ячейку
                 GameObject cellObj = Instantiate(letterCellPrefab, canvas.transform);
 
-                // Позиционируем её (UI вариант с manual spacing)
-                RectTransform rt = cellObj.GetComponent<RectTransform>();
-                rt.anchoredPosition = new Vector2(x * cellSpacing, -y * cellSpacing);
-
                 // Получаем скрипт LetterCell
                 LetterCell letterCell = cellObj.GetComponent<LetterCell>();
 
@@ -205,14 +210,5 @@ public class BoardManager : MonoBehaviour
                 grid[x, y] = letterCell;
             }
         }
-    }
-
-    /// <summary>
-    /// Вспомогательный метод: получить ссылку на ячейку [x,y].
-    /// </summary>
-    public LetterCell GetCell(int x, int y)
-    {
-        if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) return null;
-        return grid[x, y];
     }
 }

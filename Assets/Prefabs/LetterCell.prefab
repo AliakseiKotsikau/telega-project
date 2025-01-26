@@ -134,6 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e050d511dda4e46a8b354ed6732b78f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cellText: {fileID: 9000923599395029293}
   letter: 0
   x: 0
   y: 0

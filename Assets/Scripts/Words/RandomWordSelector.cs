@@ -3,28 +3,46 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using System.Collections;
+using UnityEngine.Networking;
+using UnityEngine.Events;
 
 public class RandomWordSelector : MonoBehaviour
 {
-    private string jsonFilePath = "Assets/Levels/word_sets.json"; // Путь к JSON файлу
+    private readonly string PATH = Path.Combine(Application.streamingAssetsPath, "word_sets.json");
 
     private Dictionary<string, List<string>> wordSets;
 
+    public UnityAction OnWordsLoadFinished;
+
     void Start()
     {
-        LoadWordSets();
+        StartCoroutine(LoadWordSets(PATH));
     }
 
-    private void LoadWordSets()
+    IEnumerator LoadWordSets(string uri)
     {
-        if (File.Exists(jsonFilePath))
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
-            string jsonContent = File.ReadAllText(jsonFilePath);
-            wordSets = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(jsonContent);
-        }
-        else
-        {
-            Debug.LogError($"JSON файл не найден по пути: {jsonFilePath}");
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError("Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError("HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    wordSets = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(webRequest.downloadHandler.text);
+                    OnWordsLoadFinished?.Invoke();
+
+                    Debug.Log("Received Json: " + webRequest.downloadHandler.text);
+                    break;
+            }
         }
     }
 
@@ -32,16 +50,15 @@ public class RandomWordSelector : MonoBehaviour
     {
         if (wordSets != null && wordSets.Count > 0)
         {
-            // Получаем случайный ключ из словаря
             List<string> keys = new List<string>(wordSets.Keys);
             string randomKey = keys[Random.Range(0, keys.Count)];
 
-            Debug.Log($"Выбранная тема: {randomKey}");
+            Debug.Log($"Selected theme: {randomKey}");
             return wordSets[randomKey];
         }
         else
         {
-            Debug.LogError("Словари пусты или не загружены.");
+            Debug.LogError("Dictionaries are empty or are not loaded yet.");
             return null;
         }
     }
