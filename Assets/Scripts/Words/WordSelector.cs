@@ -78,6 +78,11 @@ public class WordSelector : MonoBehaviour
 
         // Очищаем список выбранных ячеек
         selectedCells.Clear();
+
+        if (validWords.Count == 0)
+        {
+            EventBus<AllWordsFoundEvent>.Raise(new AllWordsFoundEvent());
+        }
     }
 
     private void AddCell(LetterCell cell)

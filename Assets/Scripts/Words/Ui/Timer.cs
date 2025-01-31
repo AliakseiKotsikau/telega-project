@@ -8,12 +8,10 @@ public class Timer : MonoBehaviour
     private Image timerBar;
     [SerializeField]
     private TextMeshProUGUI timerText; 
-    [SerializeField]
-    [Range(1,100)]
-    private float timeLimit = 60f;
 
     private EventBinding<GameStartsEvent> gameStartsEventBinding;
 
+    private float timeLimit = 60f;
     private float timeRemaining;
     private bool isRunning = false;
 
@@ -29,35 +27,34 @@ public class Timer : MonoBehaviour
         EventBus<GameStartsEvent>.Deregister(gameStartsEventBinding);
     }
 
-    void StartTimer()
+    private void StartTimer(GameStartsEvent gameStartsEvent)
     {
+        timeLimit = gameStartsEvent.TimeLimit;
         timeRemaining = timeLimit;
         isRunning = true;
     }
 
     void Update()
     {
-        if (isRunning)
-        {
-            timeRemaining -= Time.deltaTime;
-            UpdateUI();
+        if (!isRunning) return;
+        
+        timeRemaining -= Time.deltaTime;
+        UpdateUI();
 
-            if (timeRemaining <= 0)
-            {
-                timeRemaining = 0;
-                isRunning = false;
-                OnTimeExpired();
-            }
-        }
+        if (timeRemaining > 0) return;
+        
+        timeRemaining = 0;
+        isRunning = false;
+        OnTimeExpired();
     }
 
     private void UpdateUI()
     {
-        if (timerBar != null)
+        if (timerBar)
         {
             timerBar.fillAmount = timeRemaining / timeLimit;
         }
-        if (timerText != null)
+        if (timerText)
         {
             timerText.text = $"{Mathf.Ceil(timeRemaining)}";
         }

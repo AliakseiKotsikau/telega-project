@@ -3,23 +3,32 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]
+    [Range(1, 100)]
+    private int timeLimit;
+
     private UiManager uiManager;
 
     private EventBinding<TimeIsOutEvent> timeIsOutEventBinding;
+    private EventBinding<AllWordsFoundEvent> allWordsFoundEventBinding;
 
     private void OnEnable()
     {
         timeIsOutEventBinding = new EventBinding<TimeIsOutEvent>(HandleTimeOut);
         EventBus<TimeIsOutEvent>.Register(timeIsOutEventBinding);
+        
+        allWordsFoundEventBinding = new EventBinding<AllWordsFoundEvent>(HandleFindingAllWords);
+        EventBus<AllWordsFoundEvent>.Register(allWordsFoundEventBinding);
     }
 
     private void OnDisable()
     {
         EventBus<TimeIsOutEvent>.Deregister(timeIsOutEventBinding);
+        EventBus<AllWordsFoundEvent>.Deregister(allWordsFoundEventBinding);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    private void Awake()
     {
         uiManager = GetComponent<UiManager>();
     }
@@ -36,7 +45,7 @@ public class GameManager : MonoBehaviour
             case GameState.SET_UP:
                 break;
             case GameState.START:
-                uiManager.StartGame();
+                EventBus<GameStartsEvent>.Raise(new GameStartsEvent { TimeLimit = timeLimit });
                 break;
             case GameState.PLAYING:
                 break;
@@ -55,5 +64,10 @@ public class GameManager : MonoBehaviour
     private void HandleTimeOut()
     {
         uiManager.EnableTimeOutPanel();
+    }
+
+    private void HandleFindingAllWords()
+    {
+        uiManager.EnableWinPanel();
     }
 }

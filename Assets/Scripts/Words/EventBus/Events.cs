@@ -2,7 +2,12 @@
 
 public struct TimeIsOutEvent : IEvent { }
 
-public struct GameStartsEvent : IEvent { }
+public struct GameStartsEvent : IEvent {
+    public int TimeLimit;
+}
+
+public struct AllWordsFoundEvent : IEvent {
+}
 
 public struct PlayerEvent : IEvent {
     public int health;
