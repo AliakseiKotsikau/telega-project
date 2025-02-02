@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -7,42 +8,64 @@ public class GameManager : MonoBehaviour
     [Range(1, 100)]
     private int timeLimit;
 
-    private UiManager uiManager;
+    private UiScreenManager uiScreenManager;
+    private OpponentSearcher opponentSearcher;
 
     private EventBinding<TimeIsOutEvent> timeIsOutEventBinding;
     private EventBinding<AllWordsFoundEvent> allWordsFoundEventBinding;
+    private EventBinding<FindButtonPressedEvent> findButtonPressedEventBinding;
+    private EventBinding<OpponentSearchCancelledEvent> opponentSearchCancelledEventBinding;
 
     private void OnEnable()
     {
-        timeIsOutEventBinding = new EventBinding<TimeIsOutEvent>(HandleTimeOut);
+        timeIsOutEventBinding = new EventBinding<TimeIsOutEvent>(() => ChangeState(GameState.TIME_OUT));
         EventBus<TimeIsOutEvent>.Register(timeIsOutEventBinding);
         
-        allWordsFoundEventBinding = new EventBinding<AllWordsFoundEvent>(HandleFindingAllWords);
+        allWordsFoundEventBinding = new EventBinding<AllWordsFoundEvent>(() => ChangeState(GameState.WIN));
         EventBus<AllWordsFoundEvent>.Register(allWordsFoundEventBinding);
+        
+        findButtonPressedEventBinding = new EventBinding<FindButtonPressedEvent>(() => ChangeState(GameState.SEARCHING_FOR_OPPONONET));
+        EventBus<FindButtonPressedEvent>.Register(findButtonPressedEventBinding);
+        
+        opponentSearchCancelledEventBinding = new EventBinding<OpponentSearchCancelledEvent>(() => ChangeState(GameState.SEARCH_CANCELLED));
+        EventBus<OpponentSearchCancelledEvent>.Register(opponentSearchCancelledEventBinding);
     }
 
     private void OnDisable()
     {
         EventBus<TimeIsOutEvent>.Deregister(timeIsOutEventBinding);
         EventBus<AllWordsFoundEvent>.Deregister(allWordsFoundEventBinding);
+        EventBus<FindButtonPressedEvent>.Deregister(findButtonPressedEventBinding);
+        EventBus<OpponentSearchCancelledEvent>.Deregister(opponentSearchCancelledEventBinding);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
-        uiManager = GetComponent<UiManager>();
+        uiScreenManager = GetComponent<UiScreenManager>();
+        
+        // add logic components
+        opponentSearcher = gameObject.GetOrAddComponent<OpponentSearcher>();
     }
 
     private void Start()
     {
-        ChangeState(GameState.START);
+        ChangeState(GameState.SET_UP);
     }
+    
 
     private void ChangeState(GameState newState)
     {
         switch (newState)
         {
             case GameState.SET_UP:
+                HandleSetUp();
+                break;
+            case GameState.SEARCHING_FOR_OPPONONET:
+                HandleOpponentSearching();
+                break;
+            case GameState.SEARCH_CANCELLED:
+                HandleSearchCancel();
                 break;
             case GameState.START:
                 EventBus<GameStartsEvent>.Raise(new GameStartsEvent { TimeLimit = timeLimit });
@@ -50,6 +73,7 @@ public class GameManager : MonoBehaviour
             case GameState.PLAYING:
                 break;
             case GameState.WIN:
+                HandleFindingAllWords();
                 break;
             case GameState.LOSE:
                 break;
@@ -61,13 +85,31 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void HandleSetUp()
+    {
+        UserDataManager.InitUserBaseBalance();
+        uiScreenManager.EnableMenuCanvas();
+        ChangeState(GameState.START);
+    }
+    
+    private void HandleOpponentSearching()
+    {
+        uiScreenManager.EnableLookingForOpponentPanel();
+    }
+    
+    private void HandleSearchCancel()
+    {
+        uiScreenManager.DisableLookingForOpponentPanel();
+    }
+
     private void HandleTimeOut()
     {
-        uiManager.EnableTimeOutPanel();
+        uiScreenManager.EnableTimeOutPanel();
     }
 
     private void HandleFindingAllWords()
     {
-        uiManager.EnableWinPanel();
+        uiScreenManager.EnableWinPanel();
     }
+    
 }

@@ -9,7 +9,18 @@ public struct GameStartsEvent : IEvent {
 public struct AllWordsFoundEvent : IEvent {
 }
 
-public struct PlayerEvent : IEvent {
-    public int health;
-    public int mana;
+public struct GameOptionSelectedEvent : IEvent
+{
+    public GameOptionView GameOption;
 }
+
+public struct PlayerBalanceUpdatedEvent : IEvent
+{
+    public int PlayerBalance;
+}
+
+public struct FindButtonPressedEvent : IEvent { }
+
+public struct OpponentSearchCancelledEvent : IEvent { }
+
+public struct OpponentFoundEvent : IEvent { }
