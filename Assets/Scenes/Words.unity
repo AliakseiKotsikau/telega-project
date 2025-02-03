@@ -119,6 +119,34 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &85197214 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1897737134945473603, guid: a15e6d7c90bf5ad47bac9a8638de6fc6, type: 3}
+  m_PrefabInstance: {fileID: 2823705381752620168}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &85197216 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6964784112381086127, guid: a15e6d7c90bf5ad47bac9a8638de6fc6, type: 3}
+  m_PrefabInstance: {fileID: 2823705381752620168}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85197214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &85197218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 85197214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72834a406ebc09d46832192aa7575045, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &206189799
 GameObject:
   m_ObjectHideFlags: 0
@@ -2959,6 +2987,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: LookingForOpponentPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 1963612632421624318, guid: a15e6d7c90bf5ad47bac9a8638de6fc6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3377239116778018450, guid: a15e6d7c90bf5ad47bac9a8638de6fc6, type: 3}
+      propertyPath: opponentSearchingText
+      value: 
+      objectReference: {fileID: 85197218}
+    - target: {fileID: 3377239116778018450, guid: a15e6d7c90bf5ad47bac9a8638de6fc6, type: 3}
+      propertyPath: lookingForOpponentText
+      value: 
+      objectReference: {fileID: 85197216}
     - target: {fileID: 5659676096864040241, guid: a15e6d7c90bf5ad47bac9a8638de6fc6, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3042,7 +3082,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1897737134945473603, guid: a15e6d7c90bf5ad47bac9a8638de6fc6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 85197218}
   m_SourcePrefab: {fileID: 100100000, guid: a15e6d7c90bf5ad47bac9a8638de6fc6, type: 3}
 --- !u!1001 &6871591985316789148
 PrefabInstance:

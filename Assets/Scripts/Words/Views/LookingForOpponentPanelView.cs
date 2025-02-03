@@ -3,9 +3,14 @@ using UnityEngine.UI;
 
 public class LookingForOpponentPanelView : MonoBehaviour
 {
-    [SerializeField]
-    private Button cancelSearchButton;
-    
+    [SerializeField] private Button cancelSearchButton;
+    [SerializeField] private OpponentSearchingText opponentSearchingText;
+
+    private void OnEnable()
+    {
+        opponentSearchingText.StartSearchingAnimation();
+    }
+
     private void Start()
     {
         cancelSearchButton.onClick.AddListener(OnCancelButtonClick);
