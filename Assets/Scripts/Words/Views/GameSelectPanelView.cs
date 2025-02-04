@@ -23,6 +23,7 @@ public class GameSelectPanelView : MonoBehaviour
     private void Start()
     {
         findButton.onClick.AddListener(OnFindButton);
+        findButton.interactable = false;
     }
 
     private void OnFindButton()
@@ -32,6 +33,7 @@ public class GameSelectPanelView : MonoBehaviour
     
     private void OnGameSelected(GameOptionSelectedEvent gameOptionSelectedEvent)
     {
+        findButton.interactable = true;
         foreach (var gameOption in gameOptionViews)
         {
             if (gameOption != gameOptionSelectedEvent.GameOption)

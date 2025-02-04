@@ -15,6 +15,11 @@ public class UiScreenManager : MonoBehaviour
         menuCanvas.DisableLookingForOpponentPanel();
     }
     
+    public void HideLookingForOpponentPanelCancelButton()
+    {
+        menuCanvas.HideLookingForOpponentPanelCancelButton();
+    }
+    
     public void EnableGameCanvas()
     {
         gameCanvas.gameObject.SetActive(true);

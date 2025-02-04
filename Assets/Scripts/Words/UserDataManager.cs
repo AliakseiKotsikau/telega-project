@@ -45,11 +45,15 @@ public class UserDataManager
         EventBus<PlayerBalanceUpdatedEvent>.Raise(new PlayerBalanceUpdatedEvent { PlayerBalance = amount });
     }
     
-    public static int GetPriceOfStartedGameAndRemoveEntry()
+    public static int GetPriceOfStartedGame()
     {
-        int price = PlayerPrefs.GetInt(PriceOfStartedGameKey, 0);
+        return PlayerPrefs.GetInt(PriceOfStartedGameKey, 0);
+    }
+    
+    public static void AddStarsRewardAndRemovePriceOfStartedGame()
+    {
+        AddStars(GetPriceOfStartedGame());
         PlayerPrefs.DeleteKey(PriceOfStartedGameKey);
-        return price;
     }
     
     public static void SetPriceOfStartedGame(int price)

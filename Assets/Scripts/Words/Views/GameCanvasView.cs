@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +10,13 @@ public class GameCanvasView : MonoBehaviour
     [SerializeField]
     private GameObject timeOutPanel;
     [SerializeField]
-    private GameObject winPanel;
+    private WinPanelView winPanel;
+
+    private void OnEnable()
+    {
+        winPanel.gameObject.SetActive(false);
+        timeOutPanel.SetActive(false);
+    }
 
     public void EnableTimeOutPanel()
     {
@@ -17,6 +25,6 @@ public class GameCanvasView : MonoBehaviour
 
     public void EnableWinPanel()
     {
-        winPanel.SetActive(true);
+        winPanel.gameObject.SetActive(true);
     }
 }

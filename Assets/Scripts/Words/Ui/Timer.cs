@@ -34,7 +34,7 @@ public class Timer : MonoBehaviour
         isRunning = true;
     }
 
-    void Update()
+    private void Update()
     {
         if (!isRunning) return;
         

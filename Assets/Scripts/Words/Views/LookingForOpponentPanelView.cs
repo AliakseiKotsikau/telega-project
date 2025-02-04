@@ -15,6 +15,11 @@ public class LookingForOpponentPanelView : MonoBehaviour
     {
         cancelSearchButton.onClick.AddListener(OnCancelButtonClick);
     }
+    
+    public void HideCancelButton()
+    {
+        cancelSearchButton.gameObject.SetActive(false);
+    }
 
     private void OnCancelButtonClick()
     {

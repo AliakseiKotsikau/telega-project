@@ -11,32 +11,30 @@ public class GameManager : MonoBehaviour
     private UiScreenManager uiScreenManager;
     private OpponentSearcher opponentSearcher;
 
-    private EventBinding<TimeIsOutEvent> timeIsOutEventBinding;
-    private EventBinding<AllWordsFoundEvent> allWordsFoundEventBinding;
+    private EventBinding<GameOptionSelectedEvent> gameOptionSelectedEventBinding;
     private EventBinding<FindButtonPressedEvent> findButtonPressedEventBinding;
     private EventBinding<OpponentSearchCancelledEvent> opponentSearchCancelledEventBinding;
+    private EventBinding<OpponentFoundEvent> opponentFoundEventBinding;
+    private EventBinding<OpponentNameShownEvent> opponentNameShownEventBinding;
+    private EventBinding<TimeIsOutEvent> timeIsOutEventBinding;
+    private EventBinding<AllWordsFoundEvent> allWordsFoundEventBinding;
+    private EventBinding<RewardClaimedEvent> rewardClaimedEventBinding;
 
     private void OnEnable()
     {
-        timeIsOutEventBinding = new EventBinding<TimeIsOutEvent>(() => ChangeState(GameState.TIME_OUT));
-        EventBus<TimeIsOutEvent>.Register(timeIsOutEventBinding);
-        
-        allWordsFoundEventBinding = new EventBinding<AllWordsFoundEvent>(() => ChangeState(GameState.WIN));
-        EventBus<AllWordsFoundEvent>.Register(allWordsFoundEventBinding);
-        
-        findButtonPressedEventBinding = new EventBinding<FindButtonPressedEvent>(() => ChangeState(GameState.SEARCHING_FOR_OPPONONET));
-        EventBus<FindButtonPressedEvent>.Register(findButtonPressedEventBinding);
-        
-        opponentSearchCancelledEventBinding = new EventBinding<OpponentSearchCancelledEvent>(() => ChangeState(GameState.SEARCH_CANCELLED));
-        EventBus<OpponentSearchCancelledEvent>.Register(opponentSearchCancelledEventBinding);
+        BindEventsToHandlers();
     }
 
     private void OnDisable()
     {
-        EventBus<TimeIsOutEvent>.Deregister(timeIsOutEventBinding);
-        EventBus<AllWordsFoundEvent>.Deregister(allWordsFoundEventBinding);
+        EventBus<GameOptionSelectedEvent>.Deregister(gameOptionSelectedEventBinding);
         EventBus<FindButtonPressedEvent>.Deregister(findButtonPressedEventBinding);
         EventBus<OpponentSearchCancelledEvent>.Deregister(opponentSearchCancelledEventBinding);
+        EventBus<OpponentFoundEvent>.Deregister(opponentFoundEventBinding);
+        EventBus<OpponentNameShownEvent>.Deregister(opponentNameShownEventBinding);
+        EventBus<TimeIsOutEvent>.Deregister(timeIsOutEventBinding);
+        EventBus<AllWordsFoundEvent>.Deregister(allWordsFoundEventBinding);
+        EventBus<RewardClaimedEvent>.Deregister(rewardClaimedEventBinding);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -50,56 +48,67 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        ChangeState(GameState.SET_UP);
+        HandleSetUp();
     }
-    
 
-    private void ChangeState(GameState newState)
+    private void BindEventsToHandlers()
     {
-        switch (newState)
-        {
-            case GameState.SET_UP:
-                HandleSetUp();
-                break;
-            case GameState.SEARCHING_FOR_OPPONONET:
-                HandleOpponentSearching();
-                break;
-            case GameState.SEARCH_CANCELLED:
-                HandleSearchCancel();
-                break;
-            case GameState.START:
-                EventBus<GameStartsEvent>.Raise(new GameStartsEvent { TimeLimit = timeLimit });
-                break;
-            case GameState.PLAYING:
-                break;
-            case GameState.WIN:
-                HandleFindingAllWords();
-                break;
-            case GameState.LOSE:
-                break;
-            case GameState.TIME_OUT:
-                HandleTimeOut();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
-        }
+        gameOptionSelectedEventBinding = new EventBinding<GameOptionSelectedEvent>(HandleGameOptionSelection);
+        EventBus<GameOptionSelectedEvent>.Register(gameOptionSelectedEventBinding);
+        
+        findButtonPressedEventBinding = new EventBinding<FindButtonPressedEvent>(HandleOpponentSearching);
+        EventBus<FindButtonPressedEvent>.Register(findButtonPressedEventBinding);
+        
+        opponentSearchCancelledEventBinding = new EventBinding<OpponentSearchCancelledEvent>(HandleSearchCancel);
+        EventBus<OpponentSearchCancelledEvent>.Register(opponentSearchCancelledEventBinding);
+        
+        opponentFoundEventBinding = new EventBinding<OpponentFoundEvent>(HandleOpponentFound);
+        EventBus<OpponentFoundEvent>.Register(opponentFoundEventBinding);
+        
+        opponentNameShownEventBinding = new EventBinding<OpponentNameShownEvent>(HandleStart);
+        EventBus<OpponentNameShownEvent>.Register(opponentNameShownEventBinding);
+        
+        timeIsOutEventBinding = new EventBinding<TimeIsOutEvent>(HandleTimeOut);
+        EventBus<TimeIsOutEvent>.Register(timeIsOutEventBinding);
+        
+        allWordsFoundEventBinding = new EventBinding<AllWordsFoundEvent>(HandleFindingAllWords);
+        EventBus<AllWordsFoundEvent>.Register(allWordsFoundEventBinding);
+        
+        rewardClaimedEventBinding = new EventBinding<RewardClaimedEvent>(HandleRewardClaimed);
+        EventBus<RewardClaimedEvent>.Register(rewardClaimedEventBinding);
     }
 
     private void HandleSetUp()
     {
         UserDataManager.InitUserBaseBalance();
         uiScreenManager.EnableMenuCanvas();
-        ChangeState(GameState.START);
+    }
+    
+    private void HandleGameOptionSelection(GameOptionSelectedEvent gameOptionSelectedEvent)
+    {
+        UserDataManager.SetPriceOfStartedGame(gameOptionSelectedEvent.GameOption.StarsAmount);
     }
     
     private void HandleOpponentSearching()
     {
         uiScreenManager.EnableLookingForOpponentPanel();
+        opponentSearcher.FindOpponent();
     }
     
     private void HandleSearchCancel()
     {
         uiScreenManager.DisableLookingForOpponentPanel();
+    }
+    
+    private void HandleOpponentFound()
+    {
+        uiScreenManager.HideLookingForOpponentPanelCancelButton();
+    }
+    
+    private void HandleStart()
+    {
+        uiScreenManager.EnableGameCanvas();
+        EventBus<GameStartsEvent>.Raise(new GameStartsEvent { TimeLimit = timeLimit });
     }
 
     private void HandleTimeOut()
@@ -112,4 +121,10 @@ public class GameManager : MonoBehaviour
         uiScreenManager.EnableWinPanel();
     }
     
+    private void HandleRewardClaimed()
+    {
+        uiScreenManager.EnableMenuCanvas();
+        uiScreenManager.DisableLookingForOpponentPanel();
+        UserDataManager.AddStarsRewardAndRemovePriceOfStartedGame();
+    }
 }

@@ -7,6 +7,8 @@ public class GameOptionView : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private int starsAmount;
     [SerializeField] private TextMeshProUGUI optionText;
+    
+    public int StarsAmount => starsAmount;
 
     private Image image;
 

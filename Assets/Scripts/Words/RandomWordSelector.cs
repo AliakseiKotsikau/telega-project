@@ -17,7 +17,8 @@ public class RandomWordSelector : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(LoadWordSets(PATH));
+        string uri = Application.isEditor ? Path.Combine(Application.streamingAssetsPath, "dev.json") : PATH;
+        StartCoroutine(LoadWordSets(uri));
     }
 
     IEnumerator LoadWordSets(string uri)
