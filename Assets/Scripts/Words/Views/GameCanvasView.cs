@@ -1,30 +1,28 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class GameCanvasView : MonoBehaviour
+namespace Words.Views
 {
-    [SerializeField]
-    private Timer timerProgressBar;
-    [SerializeField]
-    private GameObject timeOutPanel;
-    [SerializeField]
-    private WinPanelView winPanel;
-
-    private void OnEnable()
+    public class GameCanvasView : MonoBehaviour
     {
-        winPanel.gameObject.SetActive(false);
-        timeOutPanel.SetActive(false);
-    }
+        [SerializeField] private Timer timerProgressBar;
+        [SerializeField] private TimeoutPanelView timeOutPanel;
+        [SerializeField] private WinPanelView winPanel;
 
-    public void EnableTimeOutPanel()
-    {
-        timeOutPanel.SetActive(true);
-    }
+        private void OnEnable()
+        {
+            winPanel.gameObject.SetActive(false);
+            timeOutPanel.gameObject.SetActive(false);
+        }
 
-    public void EnableWinPanel()
-    {
-        winPanel.gameObject.SetActive(true);
+        public void EnableTimeOutPanelWithLostValue(int howMuchLost)
+        {
+            timeOutPanel.gameObject.SetActive(true);
+            timeOutPanel.SetLostValue(howMuchLost);
+        }
+
+        public void EnableWinPanel()
+        {
+            winPanel.gameObject.SetActive(true);
+        }
     }
 }

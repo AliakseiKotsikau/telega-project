@@ -1,4 +1,5 @@
 using UnityEngine;
+using Words.Views;
 
 public class UiScreenManager : MonoBehaviour
 {
@@ -32,9 +33,9 @@ public class UiScreenManager : MonoBehaviour
         menuCanvas.gameObject.SetActive(true);
     }
 
-    public void EnableTimeOutPanel()
+    public void EnableTimeOutPanel(int howMuchLost)
     {
-        gameCanvas.EnableTimeOutPanel();
+        gameCanvas.EnableTimeOutPanelWithLostValue(howMuchLost);
     }
 
     public void EnableWinPanel()

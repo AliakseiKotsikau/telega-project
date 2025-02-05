@@ -10,19 +10,19 @@ public class UserDataManager
         return PlayerPrefs.GetInt(StarsAmountKey, 0);
     }
 
-    public static void SetStarsAmount(int amount)
+    private static void SetStarsAmount(int amount)
     {
         PlayerPrefs.SetInt(StarsAmountKey, amount);
         RaiseBalanceChangedEvent(amount);
     }
 
-    public static void AddStars(int amount)
+    private static void AddStars(int amount)
     {
         int currentAmount = GetStarsAmount();
         SetStarsAmount(currentAmount + amount);
     }
-    
-    public static void WithdrawStars(int amount)
+
+    private static void WithdrawStars(int amount)
     {
         int currentAmount = GetStarsAmount();
         SetStarsAmount(currentAmount - amount);
@@ -50,14 +50,20 @@ public class UserDataManager
         return PlayerPrefs.GetInt(PriceOfStartedGameKey, 0);
     }
     
+    public static void SetPriceOfStartedGame(int price)
+    {
+        PlayerPrefs.SetInt(PriceOfStartedGameKey, price);
+    }
+    
     public static void AddStarsRewardAndRemovePriceOfStartedGame()
     {
         AddStars(GetPriceOfStartedGame());
         PlayerPrefs.DeleteKey(PriceOfStartedGameKey);
     }
     
-    public static void SetPriceOfStartedGame(int price)
+    public static void WithdrawStarsRewardAndRemovePriceOfStartedGame()
     {
-        PlayerPrefs.SetInt(PriceOfStartedGameKey, price);
+        WithdrawStars(GetPriceOfStartedGame());
+        PlayerPrefs.DeleteKey(PriceOfStartedGameKey);
     }
 }

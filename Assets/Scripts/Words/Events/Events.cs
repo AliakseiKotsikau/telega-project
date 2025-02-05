@@ -45,3 +45,7 @@ public struct OpponentNameShownEvent : IEvent
 public struct RewardClaimedEvent : IEvent
 {
 }
+
+public struct BackToMenuPressedOnTimeoutPanelEvent : IEvent
+{
+}
